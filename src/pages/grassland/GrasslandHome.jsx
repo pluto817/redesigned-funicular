@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import GrasslandBgm from './GrasslandBgm.jsx'
 import './GrasslandHome.css'
 
 export default function GrasslandHome() {
@@ -75,6 +76,9 @@ export default function GrasslandHome() {
     <div className="grassland-home">
       <div className="grassland-bg" />
       <div className="grassland-particles" id="grassland-particles" />
+
+      <button className="back-btn" onClick={() => navigate('/')}>← 返回首页</button>
+      <GrasslandBgm />
 
       <div className="stations-layer">
         {stations.map((station, idx) => (

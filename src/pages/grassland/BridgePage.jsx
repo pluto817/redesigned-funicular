@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import GrasslandBgm from './GrasslandBgm.jsx'
 import './StationPage.css'
 
 export default function BridgePage() {
@@ -212,6 +213,7 @@ export default function BridgePage() {
       <div className="bg-particles" id="bridge-bg-particles" />
       <div className="peach-blossoms" id="peach-blossoms" />
       <button className="back-btn" onClick={goBack}>← 下次再去</button>
+      <GrasslandBgm />
 
       <div className="char-3d-container" ref={containerRef}>
         <canvas ref={canvasRef} />

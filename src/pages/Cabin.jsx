@@ -3,6 +3,7 @@ import SceneTransition from '../components/SceneTransition.jsx'
 import CabinEnvironment from '../components/CabinEnvironment.jsx'
 import CabinCapybara3D from './cabin/CabinCapybara3D.jsx'
 import { useScene } from '../context/SceneContext.jsx'
+import IslandBgm from './IslandBgm.jsx'
 import './Cabin.css'
 
 // ===== 本地 fallback 对话策略（以后可替换为真实 AI API）=====
@@ -345,6 +346,7 @@ export default function Cabin() {
       <button className="cabin-back" onClick={() => navigateTo('/island')} aria-label="回到慢岛">
         ← 回到慢岛
       </button>
+      <IslandBgm />
     </SceneTransition>
   )
 }

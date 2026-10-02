@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createBook } from './booksStorage.js'
+import BooksBgm from './BooksBgm.jsx'
 import './BooksPage.css'
 
 export default function PictureBookPage() {
@@ -25,6 +26,7 @@ export default function PictureBookPage() {
   if (isGenerating) {
     return (
       <div className="generate-page">
+        <BooksBgm />
         <header className="detail-header">
           <button className="back-btn-icon" onClick={() => navigate('/books')}>← 返回</button>
           <span className="detail-title">生成绘本</span>
@@ -46,6 +48,7 @@ export default function PictureBookPage() {
 
   return (
     <div className="generate-page">
+      <BooksBgm />
       <header className="detail-header">
         <button className="back-btn-icon" onClick={() => navigate('/books')}>← 返回</button>
         <span className="detail-title">生成绘本</span>

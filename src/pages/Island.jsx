@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import SceneTransition from '../components/SceneTransition.jsx'
 import LocationCard from '../components/LocationCard.jsx'
+import IslandBgm from './IslandBgm.jsx'
 import './Island.css'
 
 // 主地图：背景为 island-map.png，叠加动态效果层 + 三个精美地点卡片
@@ -95,6 +96,7 @@ export default function Island() {
         <span className="island-back__icon">←</span>
         <span className="island-back__text">返回首页</span>
       </button>
+      <IslandBgm />
     </SceneTransition>
   )
 }

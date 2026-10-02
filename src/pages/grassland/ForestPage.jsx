@@ -4,6 +4,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import GrasslandBgm from './GrasslandBgm.jsx'
 import './StationPage.css'
 
 const tasks = [
@@ -207,6 +208,7 @@ export default function ForestPage() {
     <div className="station-page forest-page">
       <div className="falling-leaves" id="falling-leaves" />
       <button className="back-btn" onClick={goBack}>← 先回去啦</button>
+      <GrasslandBgm />
       <button className="treehole-btn" onClick={() => setShowTreehole(true)}>
         🌰 树洞邮筒
       </button>

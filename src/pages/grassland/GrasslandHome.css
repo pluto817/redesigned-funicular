@@ -6,6 +6,28 @@
   font-family: 'ZCOOL KuaiLe', cursive, 'Ma Shan Zheng', sans-serif;
 }
 
+.back-btn {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+  background: rgba(255, 252, 245, 0.9);
+  border: 3px solid #d4c4a8;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #7a6a5a;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-4px);
+  background: rgba(255, 252, 245, 1);
+}
+
 .grassland-bg {
   position: fixed;
   top: 0;

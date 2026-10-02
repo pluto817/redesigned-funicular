@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getBookById } from './booksStorage.js'
 import ComicPanel from './ComicPanel.jsx'
+import BooksBgm from './BooksBgm.jsx'
 import './BooksPage.css'
 
 export default function BookDetailPage() {
@@ -34,6 +35,7 @@ export default function BookDetailPage() {
   if (!book) {
     return (
       <div className="books-page">
+        <BooksBgm />
         <header className="detail-header">
           <button className="back-btn-icon" onClick={() => navigate('/books')}>← 书架</button>
           <span className="detail-title">绘本不存在</span>
@@ -54,6 +56,7 @@ export default function BookDetailPage() {
 
   return (
     <div className="book-detail-page">
+      <BooksBgm />
       <header className="detail-header">
         <button className="back-btn-icon" onClick={() => navigate('/books')}>← 书架</button>
         <span className="detail-title">{book.title}</span>

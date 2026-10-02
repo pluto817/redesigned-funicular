@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getBooks, deleteBook } from './booksStorage.js'
+import BooksBgm from './BooksBgm.jsx'
 import './BooksPage.css'
 
 export default function BookshelfPage() {
@@ -38,10 +39,14 @@ export default function BookshelfPage() {
 
   return (
     <div className="books-page">
+      <BooksBgm />
       <header className="books-header">
-        <div className="header-title">
-          <span className="header-icon">📖</span>
-          <span>我的书架</span>
+        <div className="header-left">
+          <button className="back-btn-icon" onClick={() => navigate('/')}>← 返回</button>
+          <div className="header-title">
+            <span className="header-icon">📖</span>
+            <span>我的书架</span>
+          </div>
         </div>
         <button
           className="generate-btn"

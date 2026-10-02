@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import GrasslandBgm from './GrasslandBgm.jsx'
 import './StationPage.css'
 
 export default function DandelionPage() {
@@ -121,6 +122,7 @@ export default function DandelionPage() {
   return (
     <div className="station-page dandelion-page">
       <button className="back-btn" onClick={goBack}>← 先回去啦</button>
+      <GrasslandBgm />
       <div className="station-title">蒲公英草坡</div>
 
       {showCelebration && <div className="celebration active">{confetti}</div>}

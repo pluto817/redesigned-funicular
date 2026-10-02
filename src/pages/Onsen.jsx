@@ -4,6 +4,7 @@ import OnsenEnvironment from '../components/OnsenEnvironment.jsx'
 import Capybara3D from '../components/Capybara3D.jsx'
 import BreathingCircle from '../components/BreathingCircle.jsx'
 import { useScene } from '../context/SceneContext.jsx'
+import IslandBgm from './IslandBgm.jsx'
 import './Onsen.css'
 
 // 状态：entering(入场) → intro(引导文字) → breathing(呼吸) → complete(完成反馈) → good/stay
@@ -162,6 +163,7 @@ export default function Onsen() {
       >
         ← 回到慢岛
       </button>
+      <IslandBgm />
     </SceneTransition>
   )
 }

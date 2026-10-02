@@ -28,6 +28,12 @@
   color: #92400e;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .header-icon {
   font-size: 22px;
 }

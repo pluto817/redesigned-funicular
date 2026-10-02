@@ -3,6 +3,7 @@ import SceneTransition from '../components/SceneTransition.jsx'
 import GardenEnvironment from '../components/GardenEnvironment.jsx'
 import GardenCapybara3D from './garden/GardenCapybara3D.jsx'
 import { useScene } from '../context/SceneContext.jsx'
+import IslandBgm from './IslandBgm.jsx'
 import './Garden.css'
 
 // 陪伴时间文案
@@ -215,6 +216,7 @@ export default function Garden() {
       <button className="garden-back" onClick={() => navigateTo('/island')} aria-label="回到慢岛">
         ← 回到慢岛
       </button>
+      <IslandBgm />
     </SceneTransition>
   )
 }
