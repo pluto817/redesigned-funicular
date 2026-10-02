@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>草地探险站</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            background: #f5f0e8;
+        }
+
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('images/bg-home.png') no-repeat center center;
+            background-size: 110% 110%;
+            transition: background-position 0.1s ease-out;
+            z-index: 1;
+            animation: breatheBg 20s ease-in-out infinite;
+        }
+
+        @keyframes breatheBg {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        /* 天空粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10px); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.3; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        .stations-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .station-card {
+            position: absolute;
+            pointer-events: all;
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .station-card:hover {
+            transform: scale(1.12) translateY(-8px);
+            filter: drop-shadow(0 12px 24px rgba(0,0,0,0.15));
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .station-card:nth-child(1) { animation-delay: 0s; }
+        .station-card:nth-child(2) { animation-delay: 1s; }
+        .station-card:nth-child(3) { animation-delay: 2s; }
+
+        .card-inner {
+            background: rgba(255, 252, 245, 0.95);
+            border-radius: 24px;
+            padding: 16px 22px;
+            min-width: 160px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(139, 119, 89, 0.15);
+            border: 3px solid #e8dcc8;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .card-inner.done {
+            border-color: #b8c97a;
+            background: rgba(255, 252, 245, 1);
+            box-shadow: 0 6px 24px rgba(184, 201, 122, 0.25);
+        }
+
+        .done-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            background: #b8c97a;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: #fff;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .done-badge.show { display: flex; }
+
+        .card-inner::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #e8dcc8;
+        }
+
+        .card-inner::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid rgba(255, 252, 245, 0.95);
+        }
+
+        .station-icon {
+            font-size: 32px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .station-name {
+            font-size: 20px;
+            color: #5a4a3a;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .station-desc {
+            font-size: 13px;
+            color: #9a8a7a;
+            line-height: 1.4;
+        }
+
+        .station-difficulty {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: #fff;
+            background: #c4b49a;
+        }
+
+        /* 蒲公英草坡 - 左侧 */
+        .station-dandelion {
+            left: 18%;
+            top: 62%;
+        }
+        .station-dandelion .station-difficulty {
+            background: #b8c97a;
+        }
+
+        /* 溪流木桥 - 中间 */
+        .station-bridge {
+            left: 48%;
+            top: 50%;
+        }
+        .station-bridge .station-difficulty {
+            background: #7ab8c9;
+        }
+
+        /* 橡果森林 - 右侧 */
+        .station-forest {
+            left: 72%;
+            top: 28%;
+        }
+        .station-forest .station-difficulty {
+            background: #c9a07a;
+        }
+
+        /* 石头底座装饰 */
+        .stone-base {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: radial-gradient(ellipse, #c4b8a8 30%, transparent 70%);
+            opacity: 0.6;
+            border-radius: 50%;
+        }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .station-card {
+                transform: scale(0.85);
+            }
+            .station-dandelion { left: 8%; top: 60%; }
+            .station-bridge { left: 38%; top: 48%; }
+            .station-forest { left: 62%; top: 22%; }
+        }
+
+        .home-back-btn {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 999px;
+            background: rgba(255, 252, 245, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            color: #5a7a6a;
+            transition: transform 0.25s ease, background 0.25s ease;
+        }
+        .home-back-btn:hover {
+            transform: translateX(-3px);
+            background: rgba(255, 252, 245, 0.98);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-container"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回首页按钮 -->
+    <button class="home-back-btn" onclick="window.location.href='/'">← 返回首页</button>
+
+    <div class="stations-layer">
+        <!-- 蒲公英草坡 -->
+        <div class="station-card station-dandelion" onclick="enterStation('dandelion')">
+            <div class="card-inner" id="card-dandelion">
+                <div class="done-badge" id="badge-dandelion">✓</div>
+                <span class="station-icon">🌼</span>
+                <div class="station-name">蒲公英草坡</div>
+                <div class="station-desc">低难度 · 室内微行动</div>
+                <span class="station-difficulty">伸展放松</span>
+                <div class="stone-base"></div>
+            </div>
+        </div>
+
+        <!-- 溪流木桥 -->
+        <div class="station-card station-bridge" onclick="enterStation('bridge')">
+            <div class="card-inner" id="card-bridge">
+                <div class="done-badge" id="badge-bridge">✓</div>
+                <span class="station-icon">🌉</span>
+                <div class="station-name">溪流木桥</div>
+                <div class="station-desc">中难度 · 轻量外出</div>
+                <span class="station-difficulty">轻松散步</span>
+                <div class="stone-base"></div>
+            </div>
+        </div>
+
+        <!-- 橡果森林 -->
+        <div class="station-card station-forest" onclick="enterStation('forest')">
+            <div class="card-inner" id="card-forest">
+                <div class="done-badge" id="badge-forest">✓</div>
+                <span class="station-icon">🌰</span>
+                <div class="station-name">橡果森林</div>
+                <div class="station-desc">高难度 · 深度探索</div>
+                <span class="station-difficulty">探索发现</span>
+                <div class="stone-base"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function enterStation(station) {
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = station + '.html';
+            }, 500);
+        }
+
+        // 生成天空粒子
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 18; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = 3 + Math.random() * 5;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = -10 + 'px';
+                p.style.animationDuration = (12 + Math.random() * 16) + 's';
+                p.style.animationDelay = Math.random() * 10 + 's';
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // 读取完成状态
+        function checkProgress() {
+            const stations = ['dandelion', 'bridge', 'forest'];
+            stations.forEach(s => {
+                if (localStorage.getItem(s + '_done') === '1') {
+                    document.getElementById('card-' + s).classList.add('done');
+                    document.getElementById('badge-' + s).classList.add('show');
+                }
+            });
+        }
+        checkProgress();
+    </script>
+
+    <!-- 2.5D视差效果 -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            document.querySelector('.bg-container').style.backgroundPosition = `${50 + x * 3}% ${50 + y * 2}%`;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>溪流木桥 - 草地探险站</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://esm.sh/three@0.160.0",
+            "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+            width: 100vw;
+            min-height: 100vh;
+            background: url('images/bg-bridge-new.jpg') no-repeat center center;
+            background-size: 110% 110%;
+            position: relative;
+            transition: background-position 0.1s ease-out;
+            overflow-x: hidden;
+        }
+
+        /* 背景漂浮粒子 */
+        .bg-particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-particle {
+            position: absolute;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            animation: floatParticle linear infinite;
+        }
+        @keyframes floatParticle {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.4; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* 桃花飘落 */
+        .peach-blossoms {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .blossom {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, #ffb7c5 0%, #ff9eb5 60%, #f080a0 100%);
+            border-radius: 50% 0 50% 50%;
+            opacity: 0.8;
+            animation: blossomFall linear infinite;
+        }
+        @keyframes blossomFall {
+            0% { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.9; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(105vh) translateX(60px) rotate(720deg); opacity: 0; }
+        }
+
+        /* 鼠标拖尾粒子 */
+        .cursor-trail {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.7);
+            animation: trailFade 0.8s ease-out forwards;
+        }
+        @keyframes trailFade {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            background: rgba(255, 252, 245, 0.95);
+            border: 3px solid #b8c8d4;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #5a6a7a;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* ========== 新布局 ========== */
+        .main-layout {
+            position: relative;
+            z-index: 5;
+            width: 100vw;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px 40px;
+            gap: 16px;
+        }
+
+        /* 顶部气泡 */
+        .top-bubble {
+            background: rgba(255, 252, 245, 0.96);
+            border-radius: 24px;
+            padding: 16px 28px;
+            text-align: center;
+            border: 3px solid #e8ddd0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            position: relative;
+            max-width: 380px;
+            width: 100%;
+        }
+        .top-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid #e8ddd0;
+        }
+        .top-bubble h3 {
+            font-size: 18px;
+            color: #5a4a3a;
+            margin-bottom: 6px;
+        }
+        .top-bubble p {
+            font-size: 14px;
+            color: #7a6a5a;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .bubble-tags {
+            display: inline-flex;
+            gap: 8px;
+            background: rgba(240, 230, 215, 0.6);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #9a8a7a;
+        }
+
+        /* 左下角小对话框 */
+        .corner-bubble {
+            position: fixed;
+            bottom: 420px;
+            left: 20px;
+            background: rgba(255, 252, 245, 0.95);
+            border-radius: 18px;
+            padding: 10px 18px;
+            font-size: 14px;
+            color: #7a6a5a;
+            border: 2px solid #e0d4c0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 10;
+            max-width: 180px;
+            line-height: 1.5;
+        }
+        .corner-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 24px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #e0d4c0;
+        }
+
+        /* 3D角色 - 左下角 */
+        .char-3d {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            width: 300px;
+            height: 400px;
+            z-index: 30;
+            pointer-events: auto;
+        }
+        .char-3d canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: transparent;
+        }
+        .model-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            color: #5a8a9a;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .model-loading.hidden {
+            opacity: 0;
+        }
+
+        /* 中间大卡片 */
+        .main-card {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(180deg, #f5e8d4 0%, #e8d5b8 100%);
+            border-radius: 28px;
+            border: 4px solid #d4c0a0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15), inset 0 2px 4px rgba(255,255,255,0.3);
+            padding: 28px 28px;
+            text-align: center;
+            position: relative;
+        }
+        .main-card h2 {
+            font-size: 20px;
+            color: #6a5a4a;
+            margin-bottom: 18px;
+        }
+
+        /* 大号计时器 */
+        .timer-big {
+            font-size: 56px;
+            color: #5a4a3a;
+            letter-spacing: 4px;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 10px;
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+        }
+
+        /* 进度条 */
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(180, 160, 130, 0.35);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        .timer-progress {
+            height: 100%;
+            background: #c4a882;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        /* 已陪伴 */
+        .footprint {
+            font-size: 13px;
+            color: #9a8a7a;
+            margin-bottom: 18px;
+        }
+
+        /* 氛围标签 */
+        .mood-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+        .mood-tag {
+            background: rgba(255, 252, 245, 0.9);
+            border: 2px solid #d0c0a0;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 14px;
+            color: #7a6a5a;
+            white-space: nowrap;
+        }
+
+        /* 按钮 */
+        .card-btns {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+        }
+        .btn-go {
+            background: #e8a05c;
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 13px 36px;
+            font-family: inherit;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(232,160,92,0.35);
+            transition: all 0.2s;
+        }
+        .btn-go:active { transform: scale(0.96); }
+        .btn-go:disabled {
+            background: #d4b898;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .btn-later {
+            background: rgba(255, 252, 245, 0.95);
+            color: #7a6a5a;
+            border: 2px solid #c4b8a0;
+            border-radius: 24px;
+            padding: 13px 36px;
+            font-family: inherit;
+            font-size: 17px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .btn-later:active { transform: scale(0.96); }
+
+        /* 完成弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: rgba(255, 252, 245, 0.98);
+            border-radius: 24px;
+            padding: 30px 36px;
+            text-align: center;
+            border: 3px solid #c8d8e0;
+            max-width: 300px;
+        }
+        .modal-box h3 {
+            font-size: 22px;
+            color: #5a8a9a;
+            margin-bottom: 10px;
+        }
+        .modal-box p {
+            font-size: 15px;
+            color: #7a6a5a;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                padding: 50px 16px 30px;
+            }
+            .char-3d {
+                width: 200px;
+                height: 280px;
+            }
+            .corner-bubble {
+                bottom: 160px;
+                left: 10px;
+                font-size: 12px;
+                max-width: 140px;
+            }
+            .timer-big {
+                font-size: 44px;
+            }
+            .main-card {
+                padding: 22px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .char-3d {
+                width: 160px;
+                height: 220px;
+            }
+            .corner-bubble {
+                display: none;
+            }
+        }
+
+        /* 加载页面 */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #e8f0f4 0%, #dce8f0 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-icon {
+            font-size: 56px;
+            animation: loadingBounce 1.2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes loadingBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(10deg); }
+        }
+        .loading-text {
+            font-size: 22px;
+            color: #6a8a9a;
+            letter-spacing: 2px;
+        }
+        .loading-dots::after {
+            content: '';
+            animation: loadingDots 1.5s steps(4, end) infinite;
+        }
+        @keyframes loadingDots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载页面 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-icon">🌉</div>
+        <div class="loading-text">正在进入溪流木桥<span class="loading-dots"></span></div>
+    </div>
+
+    <div class="bg-particles" id="bgParticles"></div>
+    <div class="peach-blossoms" id="peachBlossoms"></div>
+    <button class="back-btn" onclick="goBack()">← 下次再去</button>
+
+    <!-- 左下角3D角色 -->
+    <div class="char-3d" id="char3d">
+        <canvas id="threeCanvas"></canvas>
+        <div class="model-loading" id="modelLoading">模型加载中...</div>
+    </div>
+
+    <!-- 左下角小对话框 -->
+    <div class="corner-bubble">桥那边，有不一样的风哦～</div>
+
+    <!-- 主内容区 -->
+    <div class="main-layout">
+        <!-- 顶部气泡 -->
+        <div class="top-bubble">
+            <h3>🏃 今日木桥挑战</h3>
+            <p>出门走到桥的那头，看看风经过的地方</p>
+            <div class="bubble-tags">⏱ 建议10分钟 | 轻散步 | 不赶路</div>
+        </div>
+
+        <!-- 中间大卡片 -->
+        <div class="main-card">
+            <h2>陪我走过一座小桥</h2>
+            <div class="timer-big" id="timerDigits">00:00</div>
+            <div class="timer-bar">
+                <div class="timer-progress" id="timerProgress"></div>
+            </div>
+            <div class="footprint">👣 已陪伴 <span id="timerSmall">00:00</span></div>
+            <div class="mood-tags">
+                <span class="mood-tag">🍃 听风声</span>
+                <span class="mood-tag">💧 看水面</span>
+                <span class="mood-tag">🍃 慢慢走</span>
+            </div>
+            <div class="card-btns">
+                <button class="btn-go" id="timerBtn" onclick="toggleTimer()">出发走走</button>
+                <button class="btn-pause" id="pauseBtn" onclick="togglePause()" disabled>暂停一下</button>
+                <button class="btn-later" onclick="goBack()">下次再去</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 完成弹窗 -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <h3>🌉 打卡成功</h3>
+            <p>今天的散步完成啦～<br>你迈出了很棒的一步</p>
+            <button class="btn-go" style="padding:12px 28px;font-size:16px;" onclick="backToMap()">回地图看看</button>
+        </div>
+    </div>
+
+    <script>
+        const SUGGESTED = 600; // 10分钟
+        let timer = null, elapsed = 0, running = false, lastTs = null;
+
+        function format(s) {
+            const m = Math.floor(s/60).toString().padStart(2,'0');
+            const sec = (s%60).toString().padStart(2,'0');
+            return m+':'+sec;
+        }
+
+        function updateProgress() {
+            const pct = Math.min((elapsed / SUGGESTED) * 100, 100);
+            document.getElementById('timerProgress').style.width = pct + '%';
+        }
+
+        let paused = false;
+
+        function toggleTimer() {
+            const btn = document.getElementById('timerBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            if (!running) {
+                running = true;
+                paused = false;
+                btn.textContent = '完成打卡';
+                btn.style.background = '#7ab8c9';
+                pauseBtn.disabled = false;
+                pauseBtn.textContent = '暂停一下';
+                lastTs = Date.now();
+                timer = setInterval(() => {
+                    if (paused) { lastTs = Date.now(); return; }
+                    const now = Date.now();
+                    elapsed += Math.floor((now - lastTs)/1000);
+                    lastTs = now;
+                    document.getElementById('timerDigits').textContent = format(elapsed);
+                    document.getElementById('timerSmall').textContent = format(elapsed);
+                    updateProgress();
+                }, 1000);
+            } else {
+                completeTask();
+            }
+        }
+
+        function togglePause() {
+            const pauseBtn = document.getElementById('pauseBtn');
+            if (!running) return;
+            paused = !paused;
+            if (paused) {
+                pauseBtn.textContent = '继续走';
+            } else {
+                pauseBtn.textContent = '暂停一下';
+                lastTs = Date.now();
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (running && !document.hidden && !paused) lastTs = Date.now();
+        });
+
+        function completeTask() {
+            if (timer) clearInterval(timer);
+            localStorage.setItem('bridge_done', '1');
+            localStorage.setItem('bridge_time', elapsed);
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function backToMap() {
+            window.location.href = 'index.html';
+        }
+
+        function goBack() {
+            if (timer) clearInterval(timer);
+            window.location.href = 'index.html';
+        }
+
+        // 加载页面自动消失
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1500);
+        });
+    </script>
+
+    <!-- Three.js 3D模型 -->
+    <script type="module">
+        const loadingEl = document.getElementById('modelLoading');
+        try {
+            const THREE = await import('three');
+            const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+
+            const canvas = document.getElementById('threeCanvas');
+            const box = canvas.parentElement;
+            const w = box.offsetWidth || 300;
+            const h = box.offsetHeight || 400;
+
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+            camera.position.set(0, 0.6, 4.0);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+
+            scene.add(new THREE.AmbientLight(0xffffff, 1.6));
+            const dirLight = new THREE.DirectionalLight(0xfff5e0, 2.2);
+            dirLight.position.set(3, 5, 3);
+            scene.add(dirLight);
+            scene.add(new THREE.DirectionalLight(0xe0f0ff, 1.0));
+
+            const controls = new OrbitControls(camera, canvas);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = false;
+            controls.target.set(0, 0.3, 0);
+            controls.enableZoom = true;
+            controls.minDistance = 2;
+            controls.maxDistance = 10;
+
+            new GLTFLoader().load('images/lulu3d.glb',
+                (gltf) => {
+                    const model = gltf.scene;
+                    const box3 = new THREE.Box3().setFromObject(model);
+                    const center = box3.getCenter(new THREE.Vector3());
+                    const size = box3.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+                    const scale = 2.2 / maxDim;
+
+                    model.scale.set(scale, scale, scale);
+                    model.position.set(0, -center.y * scale + 0.5, 0);
+                    model.traverse((c) => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+                    scene.add(model);
+                    if (loadingEl) loadingEl.classList.add('hidden');
+                },
+                (progress) => {
+                    if (loadingEl && progress.total > 0) {
+                        loadingEl.textContent = '模型加载中 ' + Math.round((progress.loaded / progress.total) * 100) + '%';
+                    }
+                },
+                (err) => {
+                    console.error('模型加载失败:', err);
+                    if (loadingEl) loadingEl.textContent = '模型加载失败，请刷新重试';
+                }
+            );
+
+            window.addEventListener('resize', () => {
+                const rw = box.offsetWidth || 300;
+                const rh = box.offsetHeight || 400;
+                camera.aspect = rw / rh;
+                camera.updateProjectionMatrix();
+                renderer.setSize(rw, rh);
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        } catch (e) {
+            console.error('Three.js初始化失败:', e);
+            if (loadingEl) loadingEl.textContent = '3D引擎加载失败，请刷新或检查网络';
+        }
+    </script>
+
+    <!-- 背景视差 + 粒子 + 鼠标拖尾 -->
+    <script>
+        // 生成桃花飘落
+        const peachContainer = document.getElementById('peachBlossoms');
+        for (let i = 0; i < 30; i++) {
+            const b = document.createElement('div');
+            b.className = 'blossom';
+            const size = 8 + Math.random() * 10;
+            b.style.width = size + 'px';
+            b.style.height = size + 'px';
+            b.style.left = Math.random() * 100 + '%';
+            b.style.top = -20 + 'px';
+            b.style.animationDuration = (6 + Math.random() * 10) + 's';
+            b.style.animationDelay = Math.random() * 8 + 's';
+            b.style.opacity = 0.5 + Math.random() * 0.4;
+            peachContainer.appendChild(b);
+        }
+
+        // 生成背景漂浮粒子
+        const bgParticles = document.getElementById('bgParticles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'bg-particle';
+            const size = 2 + Math.random() * 6;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDuration = (8 + Math.random() * 12) + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            bgParticles.appendChild(p);
+        }
+
+        // 鼠标视差效果
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            document.body.style.backgroundPosition = `${50 + x * 3}% ${50 + y * 2}%`;
+        });
+
+        // 鼠标拖尾微粒
+        let lastTrail = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastTrail < 30) return;
+            lastTrail = now;
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            const size = 3 + Math.random() * 5;
+            trail.style.width = size + 'px';
+            trail.style.height = size + 'px';
+            trail.style.left = (e.clientX - size/2) + 'px';
+            trail.style.top = (e.clientY - size/2) + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 800);
+        });
+    </script>
+</body>
+</html>

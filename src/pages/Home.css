@@ -1,0 +1,181 @@
+/* ===== 首页导航：插画封面 + 场景标签 ===== */
+.home-page {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #b8d8f0;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 封面插画，等比铺满 */
+.home-cover {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* 轻微边缘暗角，让标签更易读 */
+.home-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.18) 100%);
+}
+
+/* 标题 */
+.home-title {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 52px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #fff;
+  text-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(255, 255, 255, 0.4);
+  margin: 0;
+  animation: title-in 1s ease;
+}
+
+@keyframes title-in {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ===== 场景入口标签（小卡片） ===== */
+.home-tag {
+  position: absolute;
+  z-index: 5;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 10px 12px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  animation: tag-in 0.8s ease both;
+}
+
+.home-tag:hover {
+  transform: translate(-50%, calc(-50% - 4px)) scale(1.06);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.home-tag:active {
+  transform: translate(-50%, calc(-50% - 1px)) scale(1.02);
+}
+
+@keyframes tag-in {
+  from { opacity: 0; transform: translate(-50%, -40%) scale(0.85); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+.home-tag:nth-child(3) { animation-delay: 0.2s; }   /* 草地探险 */
+.home-tag:nth-child(4) { animation-delay: 0.4s; }   /* 心情绘本 */
+
+.home-tag__icon {
+  font-size: 26px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.15));
+}
+
+.home-tag__body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.3;
+}
+
+.home-tag__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3a5a4a;
+  letter-spacing: 2px;
+}
+
+.home-tag__desc {
+  font-size: 11px;
+  color: #6a8a7a;
+  letter-spacing: 1px;
+  margin-top: 1px;
+}
+
+.home-tag__arrow {
+  font-size: 16px;
+  color: #5a8a72;
+  margin-left: 4px;
+  transition: transform 0.25s ease;
+}
+
+.home-tag:hover .home-tag__arrow {
+  transform: translateX(4px);
+}
+
+/* ===== 音乐开关 ===== */
+.home-music {
+  position: absolute;
+  top: 5%;
+  right: 3%;
+  z-index: 10;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.home-music:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.85);
+}
+
+.home-music--on {
+  background: rgba(255, 255, 255, 0.85);
+  animation: music-pulse 2s ease-in-out infinite;
+}
+
+@keyframes music-pulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), 0 0 0 0 rgba(255, 255, 255, 0.5); }
+  50% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18), 0 0 0 8px rgba(255, 255, 255, 0); }
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 900px) {
+  .home-title {
+    font-size: 36px;
+    letter-spacing: 4px;
+  }
+  .home-tag {
+    padding: 8px 12px 8px 10px;
+    gap: 8px;
+  }
+  .home-tag__icon { font-size: 20px; }
+  .home-tag__title { font-size: 14px; }
+  .home-tag__desc { font-size: 10px; }
+}

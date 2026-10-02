@@ -1,0 +1,127 @@
+.loc-card {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9;
+  font-family: inherit;
+}
+
+/* 光晕底层 */
+.loc-card__glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 120px;
+  transform: translate(-50%, -50%) scale(0.85);
+  border-radius: 24px;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 230, 150, 0.55) 0%,
+    rgba(255, 230, 150, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+/* 卡片主体 */
+.loc-card__inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px 10px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 6px 18px rgba(80, 60, 40, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s ease, background 0.35s ease;
+}
+
+.loc-card__icon {
+  font-size: 28px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 3px rgba(80, 60, 40, 0.15));
+  transition: transform 0.35s ease;
+}
+
+.loc-card__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.loc-card__name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #5a4a3a;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.loc-card__en {
+  font-size: 11px;
+  color: #a89a88;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* 卡片下方短描述 */
+.loc-card__desc {
+  margin-top: 8px;
+  padding: 3px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+  font-size: 12px;
+  color: #8a7a6a;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(80, 60, 40, 0.1);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ===== 悬停效果 ===== */
+.loc-card:hover .loc-card__inner {
+  transform: translateY(-4px) scale(1.06);
+  background: rgba(255, 252, 240, 0.92);
+  box-shadow:
+    0 12px 28px rgba(255, 185, 80, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.loc-card:hover .loc-card__icon {
+  transform: scale(1.12) rotate(-4deg);
+}
+
+.loc-card:hover .loc-card__glow {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.loc-card:hover .loc-card__desc {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 点击反馈 */
+.loc-card:active .loc-card__inner {
+  transform: translateY(-1px) scale(1.02);
+}

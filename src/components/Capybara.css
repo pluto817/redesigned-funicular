@@ -1,0 +1,166 @@
+/* ===== 卡皮巴拉（CSS绘制） ===== */
+.capybara {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.capy-body {
+  position: relative;
+  width: 110px;
+  height: 75px;
+  background: linear-gradient(180deg, #c89868 0%, #a87a4a 100%);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: inset -4px -6px 10px rgba(80, 50, 20, 0.3);
+}
+
+.capy-head {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 60px;
+  background: linear-gradient(180deg, #d0a070 0%, #b08050 100%);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: inset -3px -4px 8px rgba(80, 50, 20, 0.25);
+}
+
+/* 耳朵 */
+.capy-ear {
+  position: absolute;
+  top: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #b08050;
+  box-shadow: inset -1px -2px 3px rgba(80, 50, 20, 0.3);
+}
+
+.capy-ear.ear-l { left: 10px; }
+.capy-ear.ear-r { right: 10px; }
+
+/* 眼睛 */
+.capy-eye {
+  position: absolute;
+  top: 26px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3a2a1a;
+  transition: height 0.4s ease, top 0.4s ease;
+}
+
+.capy-eye.eye-l { left: 18px; }
+.capy-eye.eye-r { right: 18px; }
+
+/* 鼻子 */
+.capy-nose {
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 8px;
+  background: #6a4a3a;
+  border-radius: 50%;
+}
+
+/* ===== 入场动画：走入 → 停下 → 入水 → 闭眼 ===== */
+.capybara--entering {
+  animation: capy-enter 6.5s ease-in-out forwards;
+}
+
+@keyframes capy-enter {
+  0% {
+    left: 90%;
+    bottom: 22%;
+    transform: translateX(-50%) scale(1);
+  }
+  40% {
+    left: 50%;
+    bottom: 22%;
+  }
+  50% {
+    left: 50%;
+    bottom: 22%;
+  }
+  65% {
+    left: 50%;
+    bottom: 16%;
+  }
+  75%, 100% {
+    left: 50%;
+    bottom: 14%;
+  }
+}
+
+/* 入场后半段闭眼 */
+.capybara--entering .capy-eye {
+  animation: capy-blink 6.5s ease-in-out forwards;
+}
+
+@keyframes capy-blink {
+  0%, 70% { height: 8px; top: 26px; }
+  75%, 100% { height: 2px; top: 29px; }
+}
+
+/* ===== 休息状态：轻微呼吸起伏 ===== */
+.capybara--resting {
+  left: 50%;
+  bottom: 14%;
+  animation: capy-rest 4s ease-in-out infinite;
+}
+
+.capybara--resting .capy-eye {
+  height: 2px;
+  top: 29px;
+}
+
+@keyframes capy-rest {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+
+/* ===== 呼吸阶段：跟随呼吸起伏 ===== */
+.capybara--breathing {
+  left: 50%;
+  bottom: 14%;
+}
+
+.capybara--breathing .capy-eye {
+  height: 2px;
+  top: 29px;
+}
+
+/* 吸气：身体上升 */
+.capybara--breath-in {
+  animation: capy-inhale 4s ease-in-out forwards;
+}
+
+@keyframes capy-inhale {
+  from { transform: translateX(-50%) translateY(0) scale(1); }
+  to { transform: translateX(-50%) translateY(-10px) scale(1.05); }
+}
+
+/* 停顿：保持 */
+.capybara--breath-hold {
+  animation: capy-hold 2s ease-in-out forwards;
+}
+
+@keyframes capy-hold {
+  from { transform: translateX(-50%) translateY(-10px) scale(1.05); }
+  to { transform: translateX(-50%) translateY(-10px) scale(1.05); }
+}
+
+/* 呼气：身体下降 */
+.capybara--breath-out {
+  animation: capy-exhale 6s ease-in-out forwards;
+}
+
+@keyframes capy-exhale {
+  from { transform: translateX(-50%) translateY(-10px) scale(1.05); }
+  to { transform: translateX(-50%) translateY(0) scale(1); }
+}

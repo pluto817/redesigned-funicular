@@ -1,0 +1,206 @@
+/* ===== 全屏沉浸式温泉场景容器 ===== */
+.onsen-scene {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #2a3a4a; /* 环境加载前的兜底色，非紫色 */
+}
+
+/* ===== 3D 卡皮巴拉容器 —— 泡在温泉池中央 ===== */
+.capybara-3d-wrapper {
+  position: absolute;
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 500px;
+  z-index: 8;
+  pointer-events: auto;
+}
+
+.capybara-3d-wrapper canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 入场动画：从右侧走入温泉 */
+.capybara-3d--entering {
+  animation: capy3d-enter 6.5s ease-in-out forwards;
+}
+
+@keyframes capy3d-enter {
+  0% {
+    left: 88%;
+    bottom: 22%;
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0.8;
+  }
+  45% {
+    left: 50%;
+    bottom: 22%;
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  70%, 100% {
+    left: 50%;
+    bottom: 20%;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* 其他阶段：在温泉中 */
+.capybara-3d--intro,
+.capybara-3d--breathing,
+.capybara-3d--complete,
+.capybara-3d--good,
+.capybara-3d--stay {
+  left: 50%;
+  bottom: 20%;
+}
+
+/* ===== 底部内容区 ===== */
+.onsen-bottom {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  z-index: 15;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  transition: opacity 0.8s ease;
+}
+
+/* entering 阶段隐藏底部内容 */
+.onsen-bottom--entering {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* breathing 阶段淡化底部 UI */
+.onsen-bottom--breathing {
+  opacity: 0.45;
+}
+
+/* ===== intro 引导文字 ===== */
+.onsen-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.onsen-intro-line {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #fff8e8;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  animation: intro-fade 0.8s ease forwards;
+}
+
+@keyframes intro-fade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 按钮：半透明、圆角、简洁 ===== */
+.onsen-btn {
+  margin-top: 18px;
+  padding: 11px 36px;
+  border: 1px solid rgba(255, 245, 220, 0.5);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  color: #fff8e8;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.onsen-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 245, 220, 0.8);
+  transform: translateY(-1px);
+}
+
+.onsen-btn--ghost {
+  margin-top: 8px;
+  padding: 9px 28px;
+  font-size: 14px;
+}
+
+/* ===== 完成反馈 ===== */
+.onsen-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.onsen-feedback-main {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff8e8;
+  letter-spacing: 3px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  animation: intro-fade 0.8s ease forwards;
+}
+
+.onsen-feedback-sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: rgba(255, 240, 210, 0.75);
+  letter-spacing: 2px;
+}
+
+.onsen-feedback-btns {
+  display: flex;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+.onsen-breathe-tip,
+.onsen-stay-tip {
+  margin: 0;
+  font-size: 15px;
+  color: rgba(255, 245, 225, 0.8);
+  letter-spacing: 3px;
+}
+
+/* ===== 左上角返回按钮 —— 低透明度，悬停变明显 ===== */
+.onsen-back {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  z-index: 20;
+  padding: 8px 18px;
+  border: 1px solid rgba(255, 245, 220, 0.25);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 245, 220, 0.45);
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+}
+
+.onsen-back:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 245, 220, 0.9);
+  border-color: rgba(255, 245, 220, 0.5);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  .onsen-feedback-main { font-size: 17px; }
+  .onsen-intro-line { font-size: 16px; }
+}

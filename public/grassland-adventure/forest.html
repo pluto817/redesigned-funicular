@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>橡果森林 - 草地探险站</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://esm.sh/three@0.160.0",
+            "three/addons/": "https://esm.sh/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+            width: 100vw;
+            min-height: 100vh;
+            background: url('images/bg-forest.jpg') no-repeat center center;
+            background-size: 110% 110%;
+            transition: background-position 0.1s ease-out;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            background: rgba(255, 252, 245, 0.95);
+            border: 3px solid #c4b8a0;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #6a5a4a;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .treehole-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 252, 245, 0.95);
+            border: 3px solid #c4b8a0;
+            border-radius: 20px;
+            padding: 10px 18px;
+            font-family: inherit;
+            font-size: 14px;
+            color: #8a7a6a;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1020px;
+            margin: 0 auto;
+            padding: 70px 30px 30px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 28px;
+        }
+        .left-panel {
+            flex: 1.15;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            max-width: 460px;
+        }
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 520px;
+        }
+
+        /* 绿叶飘落 */
+        .falling-leaves {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        .leaf {
+            position: absolute;
+            border-radius: 50% 0 50% 0;
+            opacity: 0;
+            animation: leafFall linear infinite;
+        }
+        @keyframes leafFall {
+            0% { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 0; }
+            8% { opacity: 0.65; }
+            92% { opacity: 0.45; }
+            100% { transform: translateY(105vh) translateX(50px) rotate(400deg); opacity: 0; }
+        }
+
+        /* 标题区 */
+        .header-box {
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        .header-box h2 {
+            font-size: 22px;
+            color: #5a4a3a;
+            background: rgba(255, 252, 245, 0.95);
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 20px;
+            border: 3px solid #d0c8b8;
+        }
+        .header-box p {
+            font-size: 14px;
+            color: #7a6a5a;
+            margin-top: 10px;
+        }
+
+        /* 任务卡片 */
+        .task-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .task-card {
+            background: rgba(255, 252, 245, 0.98);
+            border-radius: 20px;
+            border: 3px solid #d0c8b8;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .task-card:active { transform: scale(0.98); }
+        .task-card.selected {
+            border-color: #c4a882;
+            background: rgba(255, 250, 240, 0.99);
+        }
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border-radius: 50%;
+            border: 3px solid #c4b8a0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            margin-top: 2px;
+        }
+        .task-card.selected .checkbox {
+            background: #c4a882;
+            border-color: #c4a882;
+        }
+        .task-content h3 {
+            font-size: 17px;
+            color: #5a4a3a;
+            margin-bottom: 6px;
+        }
+        .task-content p {
+            font-size: 14px;
+            color: #8a7a6a;
+            line-height: 1.6;
+        }
+
+        /* 打卡输入区 */
+        .checkin-area {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .checkin-area.active { display: flex; }
+        .checkin-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 14px;
+            border: 2px solid #d0c8b8;
+            font-family: inherit;
+            font-size: 15px;
+            background: rgba(255,255,255,0.9);
+            color: #5a4a3a;
+        }
+        .checkin-input::placeholder { color: #aaa090; }
+        .file-input { display: none; }
+
+        /* 底部按钮 */
+        .btn-group {
+            display: flex;
+            gap: 14px;
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .soft-btn {
+            font-family: inherit;
+            font-size: 16px;
+            padding: 12px 32px;
+            border-radius: 24px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        .soft-btn:active { transform: scale(0.96); }
+        .btn-primary {
+            background: #c4a882;
+            color: #fff;
+        }
+        .btn-primary:disabled {
+            background: #d4c4a8;
+            cursor: not-allowed;
+        }
+        .btn-secondary {
+            background: rgba(255, 252, 245, 0.95);
+            color: #6a5a4a;
+            border: 2px solid #c4b8a0;
+        }
+
+        /* 弹窗通用 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: rgba(255, 252, 245, 0.98);
+            border-radius: 24px;
+            padding: 28px 32px;
+            text-align: center;
+            border: 3px solid #d0c8b8;
+            max-width: 340px;
+            width: 100%;
+        }
+        .modal-box h3 {
+            font-size: 20px;
+            color: #5a4a3a;
+            margin-bottom: 10px;
+        }
+        .modal-box p {
+            font-size: 15px;
+            color: #7a6a5a;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .modal-box textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: 2px solid #d0c8b8;
+            font-family: inherit;
+            font-size: 15px;
+            resize: none;
+            margin-bottom: 14px;
+        }
+        /* 3D模型 */
+        .model-box {
+            width: 100%;
+            position: relative;
+            overflow: visible;
+            margin-bottom: 10px;
+        }
+        .model-box canvas {
+            width: 100%;
+            height: 700px;
+            display: block;
+            background: transparent;
+        }
+        .model-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: #8a7a6a;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        .model-loading.hidden {
+            opacity: 0;
+        }
+
+        /* 加载页面 */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #e8e4d8 0%, #dcd8c8 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-icon {
+            font-size: 56px;
+            animation: loadingBounce 1.2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes loadingBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(10deg); }
+        }
+        .loading-text {
+            font-size: 22px;
+            color: #8a7a5a;
+            letter-spacing: 2px;
+        }
+        .loading-dots::after {
+            content: '';
+            animation: loadingDots 1.5s steps(4, end) infinite;
+        }
+        @keyframes loadingDots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 70px 20px 20px;
+                gap: 20px;
+            }
+            .left-panel, .right-panel {
+                max-width: 100%;
+                width: 100%;
+            }
+            .model-box canvas {
+                height: 420px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载页面 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-icon">🌰</div>
+        <div class="loading-text">正在进入橡果森林<span class="loading-dots"></span></div>
+    </div>
+
+    <!-- 绿叶飘落 -->
+    <div class="falling-leaves" id="fallingLeaves"></div>
+
+    <button class="back-btn" onclick="goBack()">← 先回去啦</button>
+    <button class="treehole-btn" onclick="openTreehole()">🌰 树洞邮筒</button>
+
+    <div class="container">
+        <!-- 左侧：3D模型 -->
+        <div class="left-panel">
+            <div class="model-box" id="modelBox">
+                <canvas id="threeCanvas"></canvas>
+                <div class="model-loading" id="modelLoading">模型加载中...</div>
+            </div>
+        </div>
+
+        <!-- 右侧：任务内容 -->
+        <div class="right-panel">
+            <div class="header-box">
+                <h2>🌰 橡果森林探索清单</h2>
+                <p>选一件你今天想做的事，不必勉强，像散步一样轻松 · 建议探索30分钟</p>
+            </div>
+
+            <div class="task-list">
+            <!-- 卡片1 -->
+            <div class="task-card" id="card0" onclick="selectTask(0)">
+                <div class="checkbox" id="check0"></div>
+                <div class="task-content">
+                    <h3>🔍 街角寻宝</h3>
+                    <p>挑一家路过的小店，像探险家一样打量它——<br>门头是什么颜色？门口摆着什么有趣的小东西？<br>有没有一张手写的小黑板？把最吸引你目光的那个细节记下来。</p>
+                    <div class="checkin-area" id="area0">
+                        <input class="checkin-input" id="input0" placeholder="写下你发现的宝藏细节..." oninput="updateSubmit()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片2 -->
+            <div class="task-card" id="card1" onclick="selectTask(1)">
+                <div class="checkbox" id="check1"></div>
+                <div class="task-content">
+                    <h3>☁️ 天空日记</h3>
+                    <p>抬起头，用镜头或文字收藏此刻的天空——<br>是像棉花糖一样的云，还是漏下一束光的样子？<br>风正往哪个方向吹？这些转瞬即逝的画面，只属于今天的你。</p>
+                    <div class="checkin-area" id="area1">
+                        <button class="soft-btn btn-secondary" style="padding:8px 16px;font-size:14px;" onclick="document.getElementById('file1').click();event.stopPropagation();">📷 选择照片</button>
+                        <input type="file" class="file-input" id="file1" accept="image/*" onchange="handleFile(this)">
+                        <div id="fileName1" style="font-size:13px;color:#8a7a6a;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片3 -->
+            <div class="task-card" id="card2" onclick="selectTask(2)">
+                <div class="checkbox" id="check2"></div>
+                <div class="task-content">
+                    <h3>💌 善意漂流</h3>
+                    <p>对今天遇到的人递出一句轻轻的问候，不用刻意，<br>像一片落叶飘到肩头那样自然。<br>一句"谢谢"或者"你的花真好看"，都可能成为对方一天里的小小温暖。</p>
+                    <div class="checkin-area" id="area2">
+                        <div class="checkin-input" style="background:transparent;border:none;padding-left:0;">勾选即表示已完成 ✓</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="soft-btn btn-primary" id="submitBtn" onclick="completeTask()" disabled>完成探索</button>
+            <button class="soft-btn btn-secondary" onclick="goBack()">下次再去</button>
+        </div>
+        </div><!-- right-panel -->
+    </div><!-- container -->
+
+    <!-- 树洞弹窗 -->
+    <div class="modal-overlay" id="treeholeModal">
+        <div class="modal-box">
+            <h3>🌰 树洞邮筒</h3>
+            <p>写下今天出门的心情或小事吧</p>
+            <textarea id="treeholeText" rows="4" placeholder="今天发生了什么呢..."></textarea>
+            <div class="btn-group" style="margin-top:0;">
+                <button class="soft-btn btn-primary" onclick="submitTreehole()">投递</button>
+                <button class="soft-btn btn-secondary" onclick="closeTreehole()">下次再说</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 树洞回复弹窗 -->
+    <div class="modal-overlay" id="replyModal">
+        <div class="modal-box">
+            <h3>💌 来自树洞的回信</h3>
+            <p id="replyText">今天的你也有在认真生活呀✨</p>
+            <button class="soft-btn btn-primary" onclick="closeReply()">收下这份温暖</button>
+        </div>
+    </div>
+
+    <!-- 完成弹窗 -->
+    <div class="modal-overlay" id="doneModal">
+        <div class="modal-box">
+            <h3>🌰 探索完成</h3>
+            <p>你今天又发现了新东西，真棒！</p>
+            <button class="soft-btn btn-primary" onclick="backToMap()">回地图看看</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedIdx = null;
+        let fileSelected = false;
+        const replies = [
+            "今天的你也有在认真生活呀✨",
+            "即使是很小的出门，也是很棒的一步🌱",
+            "谢谢你愿意和这个世界打个招呼💛",
+            "你的每一天都值得被记住📖"
+        ];
+
+        function selectTask(idx) {
+            // 取消之前的选择
+            for (let i = 0; i < 3; i++) {
+                document.getElementById('card' + i).classList.remove('selected');
+                document.getElementById('check' + i).textContent = '';
+                document.getElementById('area' + i).classList.remove('active');
+            }
+            selectedIdx = idx;
+            document.getElementById('card' + idx).classList.add('selected');
+            document.getElementById('check' + idx).textContent = '✓';
+            document.getElementById('area' + idx).classList.add('active');
+            updateSubmit();
+        }
+
+        function updateSubmit() {
+            let canSubmit = false;
+            if (selectedIdx === 0) {
+                canSubmit = document.getElementById('input0').value.trim().length > 0;
+            } else if (selectedIdx === 1) {
+                canSubmit = fileSelected;
+            } else if (selectedIdx === 2) {
+                canSubmit = true;
+            }
+            document.getElementById('submitBtn').disabled = !canSubmit;
+        }
+
+        function handleFile(input) {
+            if (input.files && input.files[0]) {
+                fileSelected = true;
+                document.getElementById('fileName1').textContent = '已选择：' + input.files[0].name;
+                updateSubmit();
+            }
+        }
+
+        function completeTask() {
+            localStorage.setItem('forest_done', '1');
+            document.getElementById('doneModal').classList.add('active');
+        }
+
+        function openTreehole() {
+            document.getElementById('treeholeModal').classList.add('active');
+        }
+        function closeTreehole() {
+            document.getElementById('treeholeModal').classList.remove('active');
+        }
+        function submitTreehole() {
+            const text = document.getElementById('treeholeText').value.trim();
+            if (!text) { alert('写点什么再投递吧～'); return; }
+            closeTreehole();
+            const r = replies[Math.floor(Math.random() * replies.length)];
+            document.getElementById('replyText').textContent = r;
+            document.getElementById('replyModal').classList.add('active');
+            document.getElementById('treeholeText').value = '';
+        }
+        function closeReply() {
+            document.getElementById('replyModal').classList.remove('active');
+        }
+
+        function backToMap() {
+            window.location.href = 'index.html';
+        }
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // 加载页面自动消失
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1500);
+        });
+    </script>
+
+    <!-- 2.5D视差效果 -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            document.body.style.backgroundPosition = `${50 + x * 3}% ${50 + y * 2}%`;
+        });
+    </script>
+
+    <!-- Three.js 3D模型 -->
+    <script type="module">
+        const loadingEl = document.getElementById('modelLoading');
+        try {
+            const THREE = await import('three');
+            const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+            const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+
+            const canvas = document.getElementById('threeCanvas');
+            const box = canvas.parentElement;
+            const w = box.offsetWidth || 360;
+            const h = 700;
+
+            const scene = new THREE.Scene();
+
+            const camera = new THREE.PerspectiveCamera(60, w / h, 0.1, 100);
+            camera.position.set(1.5, 1.5, 6.0);
+
+            const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            renderer.setSize(w, h);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+
+            scene.add(new THREE.AmbientLight(0xffffff, 1.5));
+            const dirLight = new THREE.DirectionalLight(0xfff5e0, 2.0);
+            dirLight.position.set(3, 5, 3);
+            scene.add(dirLight);
+            scene.add(new THREE.DirectionalLight(0xe0f0ff, 0.8));
+
+            const controls = new OrbitControls(camera, canvas);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = false;
+            controls.target.set(-1.3, 0.5, 0);
+            controls.enableZoom = true;
+            controls.minDistance = 2;
+            controls.maxDistance = 15;
+
+            new GLTFLoader().load('images/hippo3d.glb',
+                (gltf) => {
+                    const model = gltf.scene;
+                    const box3 = new THREE.Box3().setFromObject(model);
+                    const center = box3.getCenter(new THREE.Vector3());
+                    const size = box3.getSize(new THREE.Vector3());
+                    const maxDim = Math.max(size.x, size.y, size.z);
+
+                    const scale = 2.8 / maxDim;
+                    model.scale.set(scale, scale, scale);
+                    model.position.set(-1.3, -center.y * scale + 1.2, 0);
+                    model.traverse((c) => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+                    scene.add(model);
+
+                    if (loadingEl) {
+                        loadingEl.textContent = '模型已加载';
+                        setTimeout(() => loadingEl.classList.add('hidden'), 500);
+                    }
+                },
+                (progress) => {
+                    if (loadingEl && progress.total > 0) {
+                        loadingEl.textContent = '模型加载中 ' + Math.round((progress.loaded / progress.total) * 100) + '%';
+                    }
+                },
+                (err) => {
+                    console.error('模型加载失败:', err);
+                    if (loadingEl) loadingEl.textContent = '模型加载失败: ' + (err.message || '请刷新重试');
+                }
+            );
+
+            window.addEventListener('resize', () => {
+                const rw = box.offsetWidth || 360;
+                camera.aspect = rw / h;
+                camera.updateProjectionMatrix();
+                renderer.setSize(rw, h);
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
+        } catch (e) {
+            console.error('Three.js初始化失败:', e);
+            if (loadingEl) loadingEl.textContent = '3D引擎加载失败，请刷新或检查网络';
+        }
+    </script>
+
+    <!-- 生成绿叶 -->
+    <script>
+        (function() {
+            const container = document.getElementById('fallingLeaves');
+            if (!container) return;
+            const colors = ['#8faa7a', '#9ab88a', '#a3c08a', '#8b9e6e', '#9ebf7a'];
+            const count = 10;
+            for (let i = 0; i < count; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                const size = 6 + Math.random() * 8;
+                leaf.style.width = size + 'px';
+                leaf.style.height = (size * 1.4) + 'px';
+                leaf.style.left = Math.random() * 100 + '%';
+                leaf.style.background = colors[Math.floor(Math.random() * colors.length)];
+                leaf.style.animationDuration = (5 + Math.random() * 6) + 's';
+                leaf.style.animationDelay = (Math.random() * 8) + 's';
+                leaf.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+                container.appendChild(leaf);
+            }
+        })();
+    </script>
+</body>
+</html>

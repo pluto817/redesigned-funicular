@@ -1,0 +1,579 @@
+/* ===== ComicPanel 漫画格样式 ===== */
+
+.comic-panel {
+  width: 100%;
+  height: 100%;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(180, 83, 9, 0.15);
+  border: 4px solid rgba(255, 255, 255, 0.7);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  position: relative;
+}
+
+.z-10 { z-index: 10; }
+
+/* ===== 场景装饰 ===== */
+.scene-decorations {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-ground {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 33%;
+}
+
+/* 雨滴 */
+.raindrop {
+  position: absolute;
+  top: -10%;
+  font-size: 12px;
+  color: #93c5fd;
+  animation: rain-fall 2s linear infinite;
+}
+@keyframes rain-fall {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 0.7; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+/* 草地小花 */
+.flower {
+  position: absolute;
+  font-size: 16px;
+}
+
+/* 蝴蝶 */
+.butterfly {
+  position: absolute;
+  top: 25%;
+  right: 25%;
+  font-size: 20px;
+  animation: butterfly-fly 4s ease-in-out infinite;
+}
+@keyframes butterfly-fly {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -20px); }
+}
+
+/* 温泉蒸汽 */
+.steam {
+  position: absolute;
+  bottom: 33%;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.6);
+  animation: steam-rise 3s ease-out infinite;
+}
+@keyframes steam-rise {
+  0% { transform: translateY(0); opacity: 0.6; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+
+.stone {
+  position: absolute;
+  bottom: 8px;
+  font-size: 20px;
+}
+
+/* 夕阳 */
+.sunset-sun {
+  position: absolute;
+  top: 24px;
+  right: 25%;
+  font-size: 44px;
+  animation: sun-pulse 4s ease-in-out infinite;
+}
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.cloud {
+  position: absolute;
+  font-size: 22px;
+  opacity: 0.6;
+}
+
+.bird {
+  position: absolute;
+  top: 33%;
+  left: 33%;
+  font-size: 14px;
+  animation: bird-fly 6s ease-in-out infinite;
+}
+@keyframes bird-fly {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(80px, -10px); }
+}
+
+/* 夜晚星星 */
+.star {
+  position: absolute;
+  font-size: 11px;
+  color: #fde047;
+  animation: star-twinkle 2s ease-in-out infinite;
+}
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.moon {
+  position: absolute;
+  top: 24px;
+  right: 40px;
+  font-size: 28px;
+}
+
+/* 办公室 */
+.office-item {
+  position: absolute;
+  bottom: 32px;
+  font-size: 18px;
+}
+
+.screen-glow {
+  position: absolute;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 48px;
+  background: rgba(147, 197, 253, 0.3);
+  border-radius: 4px;
+  animation: screen-flicker 3s ease-in-out infinite;
+}
+@keyframes screen-flicker {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.5; }
+}
+
+/* 西瓜 */
+.watermelon-piece {
+  position: absolute;
+  font-size: 14px;
+}
+
+.sun {
+  position: absolute;
+  top: 24px;
+  right: 32px;
+  font-size: 28px;
+}
+
+/* 茶 */
+.tea-steam {
+  position: absolute;
+  bottom: 80px;
+  right: 33%;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  animation: steam-rise 2.5s ease-out infinite;
+}
+
+.scarf {
+  position: absolute;
+  top: 33%;
+  left: 16px;
+  font-size: 16px;
+}
+
+/* 窗户 */
+.window-frame {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 128px;
+  height: 96px;
+  border: 4px solid rgba(180, 83, 9, 0.2);
+  border-radius: 8px;
+  background: rgba(224, 242, 254, 0.5);
+}
+
+.window-cloud {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  opacity: 0.6;
+  animation: cloud-drift 8s linear infinite;
+}
+@keyframes cloud-drift {
+  0%, 100% { transform: translateX(-50%) translateX(-10px); }
+  50% { transform: translateX(-50%) translateX(20px); }
+}
+
+.windowsill {
+  position: absolute;
+  top: 112px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 144px;
+  height: 8px;
+  background: rgba(180, 83, 9, 0.2);
+  border-radius: 4px;
+}
+
+.plant {
+  position: absolute;
+  top: 80px;
+  left: calc(50% - 32px);
+  font-size: 16px;
+}
+
+/* 森林 */
+.tree {
+  position: absolute;
+  bottom: 48px;
+  font-size: 36px;
+}
+
+.mushroom {
+  position: absolute;
+  bottom: 40px;
+  left: 25%;
+  font-size: 20px;
+}
+
+.sunbeam {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(254, 240, 138, 0.3);
+  border-radius: 50%;
+  filter: blur(20px);
+  animation: sunbeam-pulse 5s ease-in-out infinite;
+}
+@keyframes sunbeam-pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+  50% { transform: translateX(-50%) scale(1.2); opacity: 0.5; }
+}
+
+.default-cloud {
+  position: absolute;
+  top: 24px;
+  right: 25%;
+  font-size: 18px;
+  opacity: 0.5;
+  animation: cloud-float 3s ease-in-out infinite;
+}
+@keyframes cloud-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ===== 宠物头像 ===== */
+.comic-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  border: 4px solid white;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+.comic-avatar-xl { width: 160px; height: 160px; font-size: 80px; }
+.comic-avatar-lg { width: 128px; height: 128px; font-size: 64px; }
+.comic-avatar-md { width: 112px; height: 112px; font-size: 56px; }
+
+.avatar-bounce {
+  animation: avatar-bounce 3s ease-in-out infinite;
+}
+@keyframes avatar-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* ===== 封面 ===== */
+.cover-avatar-wrap {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.sparkle {
+  position: absolute;
+  font-size: 22px;
+}
+.sparkle-1 {
+  top: -8px;
+  right: -8px;
+  animation: sparkle-spin 3s linear infinite;
+}
+.sparkle-2 {
+  bottom: 8px;
+  left: -16px;
+  animation: sparkle-bob 2s ease-in-out infinite;
+}
+@keyframes sparkle-spin {
+  0%, 100% { transform: rotate(0) scale(1); }
+  50% { transform: rotate(10deg) scale(1.1); }
+}
+@keyframes sparkle-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.cover-title {
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.cover-subtitle {
+  text-align: center;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.cover-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.cover-tag {
+  padding: 4px 12px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 999px;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.cover-footer {
+  margin-top: 32px;
+  font-size: 13px;
+  color: #fbbf24;
+  letter-spacing: 0.2em;
+}
+
+/* ===== 封底 ===== */
+.back-cover-panel {
+  background: linear-gradient(135deg, #fef3c7, #fed7aa) !important;
+}
+
+.wave-hand {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 20px;
+  animation: wave 2s ease-in-out infinite;
+}
+@keyframes wave {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(15deg); }
+}
+
+.back-cover-text {
+  color: #92400e;
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 280px;
+}
+
+.back-cover-sign {
+  margin-top: 24px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ===== 内容页 ===== */
+.content-panel {
+  background: linear-gradient(135deg, #fef3c7, #fed7aa);
+}
+
+.paper-texture {
+  position: absolute;
+  inset: 0;
+  opacity: 0.15;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+}
+
+.content-inner {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 10;
+}
+
+/* 旁白 */
+.narration-box {
+  margin-bottom: 12px;
+}
+
+.narration-text {
+  background: rgba(146, 64, 14, 0.08);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #92400e;
+  font-style: italic;
+  line-height: 1.6;
+  border: 1px solid rgba(146, 64, 14, 0.1);
+}
+
+/* 漫画场景 */
+.comic-scene {
+  flex: 1;
+  border-radius: 16px;
+  border: 3px solid rgba(146, 64, 14, 0.25);
+  overflow: hidden;
+  position: relative;
+  min-height: 180px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pet-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-bounce {
+  position: relative;
+  animation: pet-float 3s ease-in-out infinite;
+}
+@keyframes pet-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.emotion-bubble {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 16px;
+  background: white;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: bubble-pop 0.5s ease-out;
+}
+@keyframes bubble-pop {
+  0% { transform: scale(0) translateY(10px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+.scene-props {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* 对话气泡 */
+.bubble-row {
+  margin-top: 12px;
+}
+
+.user-bubble-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.pet-bubble-row-right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pet-bubble-row-left {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.speech-bubble {
+  max-width: 80%;
+  padding: 10px 16px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.user-bubble {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-top-left-radius: 4px;
+}
+
+.pet-bubble {
+  border-top-right-radius: 4px;
+}
+
+.capybara-bubble {
+  background: linear-gradient(135deg, #fffbeb, #ffedd5);
+  border: 1px solid #fde68a;
+}
+
+.lulu-bubble {
+  background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  border: 1px solid #fbcfe8;
+}
+
+.bubble-label {
+  font-size: 11px;
+  margin-bottom: 2px;
+  color: #d97706;
+}
+
+.bubble-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #44403c;
+}
+
+/* 格序号 */
+.panel-footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #fbbf24;
+  letter-spacing: 0.05em;
+}
+
+/* ===== 翻页动画 ===== */
+.page-enter {
+  animation: page-in 0.5s ease-out;
+}
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

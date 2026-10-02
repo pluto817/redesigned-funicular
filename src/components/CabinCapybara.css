@@ -1,0 +1,134 @@
+/* ===== 小屋场景卡皮巴拉（站着/坐着） ===== */
+.capy-cabin {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%);
+  z-index: 11;
+}
+
+.capy-cabin__body {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(180deg, #d0a070 0%, #b08050 100%);
+  border-radius: 50%;
+  box-shadow: inset -4px -6px 10px rgba(80, 50, 20, 0.3);
+}
+
+/* 耳朵 */
+.capy-cabin__ear {
+  position: absolute;
+  top: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #b08050;
+  box-shadow: inset -1px -2px 3px rgba(80, 50, 20, 0.3);
+}
+
+.capy-cabin__ear.ear-l { left: 12px; }
+.capy-cabin__ear.ear-r { right: 12px; }
+
+/* 眼睛 */
+.capy-cabin__eye {
+  position: absolute;
+  top: 36px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a2a1a;
+  transition: height 0.3s ease, top 0.3s ease;
+}
+
+.capy-cabin__eye.eye-l { left: 24px; }
+.capy-cabin__eye.eye-r { right: 24px; }
+
+/* 鼻子 */
+.capy-cabin__nose {
+  position: absolute;
+  top: 54px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 9px;
+  background: #6a4a3a;
+  border-radius: 50%;
+}
+
+/* ===== 入场动画：抬头 → 走过来 → 坐下 ===== */
+.capy-cabin--entering {
+  animation: capy-cabin-enter 5.5s ease-in-out forwards;
+}
+
+@keyframes capy-cabin-enter {
+  0% {
+    left: 50%;
+    bottom: 22%;
+    transform: translateX(-50%) scale(0.9);
+  }
+  15% {
+    /* 轻微抬头 */
+    transform: translateX(-50%) scale(0.92);
+  }
+  45% {
+    /* 慢慢走过来 */
+    left: 50%;
+    bottom: 24%;
+    transform: translateX(-50%) scale(1);
+  }
+  60% {
+    /* 停下 */
+    bottom: 24%;
+  }
+  80%, 100% {
+    /* 坐下 */
+    bottom: 22%;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* 入场后半段眨眼 */
+.capy-cabin--entering .capy-cabin__eye {
+  animation: capy-cabin-blink 5.5s ease-in-out forwards;
+}
+
+@keyframes capy-cabin-blink {
+  0%, 75% { height: 10px; top: 36px; }
+  80%, 100% { height: 3px; top: 39px; }
+}
+
+/* ===== 待机：轻微呼吸起伏 + 眨眼 ===== */
+.capy-cabin--idle {
+  left: 50%;
+  bottom: 22%;
+  transform: translateX(-50%) scale(1.05);
+  animation: capy-cabin-idle 4s ease-in-out infinite;
+}
+
+.capy-cabin--idle .capy-cabin__eye {
+  animation: capy-cabin-blink-idle 4s ease-in-out infinite;
+}
+
+@keyframes capy-cabin-idle {
+  0%, 100% { transform: translateX(-50%) scale(1.05) translateY(0); }
+  50% { transform: translateX(-50%) scale(1.05) translateY(-3px); }
+}
+
+@keyframes capy-cabin-blink-idle {
+  0%, 92%, 100% { height: 10px; top: 36px; }
+  95% { height: 2px; top: 40px; }
+}
+
+/* ===== 坐下状态 ===== */
+.capy-cabin--sitting {
+  left: 50%;
+  bottom: 20%;
+  transform: translateX(-50%) scale(1.08);
+  animation: capy-cabin-idle 5s ease-in-out infinite;
+}
+
+.capy-cabin--sitting .capy-cabin__eye {
+  height: 3px;
+  top: 39px;
+}

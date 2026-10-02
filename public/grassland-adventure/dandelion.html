@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蒲公英草坡 - 草地探险站</title>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: url('images/bg-dandelion.jpg') no-repeat center center;
+            background-size: 110% 110%;
+            transition: background-position 0.1s ease-out;
+            position: relative;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            background: rgba(255, 252, 245, 0.9);
+            border: 3px solid #d4c4a8;
+            border-radius: 20px;
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 15px;
+            color: #7a6a5a;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+            background: rgba(255, 252, 245, 1);
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 40px 30px;
+            gap: 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 左侧视频区 */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 420px;
+        }
+
+        .video-window {
+            width: 100%;
+            max-width: 360px;
+            aspect-ratio: 1 / 1;
+            background: rgba(255, 252, 245, 0.96);
+            border-radius: 28px;
+            border: 4px solid #e0d4c0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-window video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 24px;
+        }
+
+        .video-label {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #8a9a6a;
+        }
+
+        /* 右侧内容区 */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 28px;
+            max-width: 420px;
+        }
+
+        /* 对话气泡 */
+        .speech-bubble {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 24px;
+            padding: 22px 30px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            border: 3px solid #e8e0d4;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            position: relative;
+            animation: bubblePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes bubblePop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid #e8e0d4;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid rgba(255, 255, 255, 0.95);
+        }
+
+        .bubble-text {
+            font-size: 18px;
+            color: #5a4a3a;
+            line-height: 1.6;
+        }
+
+        /* 计时器 */
+        .timer-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .timer-digits {
+            font-size: 56px;
+            color: #2a2a2a;
+            font-family: 'ZCOOL KuaiLe', cursive, sans-serif;
+            letter-spacing: 4px;
+            line-height: 1;
+        }
+
+        .timer-hint {
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+
+        .timer-hint.done {
+            color: #2a2a2a;
+            font-size: 16px;
+        }
+
+        /* 按钮 */
+        .btn-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .soft-btn {
+            font-family: inherit;
+            font-size: 17px;
+            padding: 14px 36px;
+            border-radius: 28px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .soft-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: #c4a882;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 252, 245, 0.9);
+            color: #8a7a6a;
+            border: 2px solid #d4c4a8;
+        }
+
+        .station-title {
+            position: fixed;
+            top: 16px;
+            right: 20px;
+            font-size: 18px;
+            color: #8a9a6a;
+            background: rgba(255, 252, 245, 0.8);
+            padding: 8px 16px;
+            border-radius: 16px;
+            border: 2px solid #d4dcc0;
+        }
+
+        /* 完成提示 */
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            display: none;
+        }
+
+        .celebration.active {
+            display: block;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: confettiFall 2s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* 响应式：移动端上下布局 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 70px 20px 20px;
+                gap: 20px;
+                overflow-y: auto;
+            }
+            .left-panel, .right-panel {
+                max-width: 100%;
+                width: 100%;
+            }
+            .video-window {
+                max-width: 260px;
+                aspect-ratio: 1 / 1;
+            }
+            .timer-digits {
+                font-size: 42px;
+            }
+            .speech-bubble {
+                max-width: 100%;
+            }
+        }
+        /* 加载页面 */
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #f0f4e0 0%, #e4ecd0 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .loading-icon {
+            font-size: 56px;
+            animation: loadingBounce 1.2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes loadingBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(10deg); }
+        }
+        .loading-text {
+            font-size: 22px;
+            color: #8a9a5a;
+            letter-spacing: 2px;
+        }
+        .loading-dots::after {
+            content: '';
+            animation: loadingDots 1.5s steps(4, end) infinite;
+        }
+        @keyframes loadingDots {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 加载页面 -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-icon">🌼</div>
+        <div class="loading-text">正在进入蒲公英草坡<span class="loading-dots"></span></div>
+    </div>
+
+    <button class="back-btn" onclick="goBack()">← 先回去啦</button>
+    <div class="station-title">蒲公英草坡</div>
+    <div class="celebration" id="celebration"></div>
+
+    <div class="container">
+        <!-- 左侧：视频 -->
+        <div class="left-panel">
+            <div class="video-window">
+                <video id="luluVideo" src="images/lulu1.mp4" loop playsinline muted autoplay></video>
+            </div>
+            <div class="video-label">噜噜的伸展示范</div>
+        </div>
+
+        <!-- 右侧：对话 + 计时 + 按钮 -->
+        <div class="right-panel">
+            <!-- 对话气泡 -->
+            <div class="speech-bubble" id="bubble">
+                <div class="bubble-text" id="bubbleText">今天也陪我伸个懒腰吧～</div>
+            </div>
+
+            <!-- 计时器 -->
+            <div class="timer-display">
+                <div class="timer-digits" id="timerDigits">00:00</div>
+                <div class="timer-hint" id="timerHint">建议时长：5分钟</div>
+            </div>
+
+            <!-- 按钮 -->
+            <div class="btn-group">
+                <button class="soft-btn btn-primary" id="actionBtn" onclick="toggleTimer()">开始吧</button>
+                <button class="soft-btn btn-secondary" onclick="goBack()">先回去啦</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUGGESTED_TIME = 300; // 5分钟
+        let timer = null;
+        let elapsed = 0;
+        let isRunning = false;
+        let isFinished = false;
+
+        const bubbleTexts = {
+            idle: '今天也陪我伸个懒腰吧～',
+            running: '慢慢来，深呼吸哦',
+            suggested: '已经1分钟啦，身体舒展开了吗？',
+            done: '哇～今天也做得很棒呢'
+        };
+
+        function updateBubble(text) {
+            const bubble = document.getElementById('bubble');
+            const txt = document.getElementById('bubbleText');
+            txt.textContent = text;
+            bubble.style.animation = 'none';
+            bubble.offsetHeight;
+            bubble.style.animation = 'bubblePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        }
+
+        function formatTime(seconds) {
+            const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const s = (seconds % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        function toggleTimer() {
+            if (isFinished) {
+                resetTimer();
+                return;
+            }
+            if (!isRunning) {
+                startTimer();
+            } else {
+                finishTimer();
+            }
+        }
+
+        function startTimer() {
+            isRunning = true;
+            document.getElementById('actionBtn').textContent = '完成';
+            updateBubble(bubbleTexts.running);
+            document.getElementById('timerHint').textContent = '计时中...';
+
+            timer = setInterval(() => {
+                elapsed++;
+                document.getElementById('timerDigits').textContent = formatTime(elapsed);
+
+                if (elapsed === SUGGESTED_TIME) {
+                    updateBubble(bubbleTexts.suggested);
+                    document.getElementById('timerHint').textContent = '已达到5分钟建议时长，可以继续哦';
+                    document.getElementById('timerHint').classList.add('done');
+                }
+            }, 1000);
+        }
+
+        function finishTimer() {
+            isRunning = false;
+            isFinished = true;
+            clearInterval(timer);
+            updateBubble(bubbleTexts.done);
+            document.getElementById('actionBtn').textContent = '再伸一次';
+            document.getElementById('timerHint').textContent = `本次伸展了 ${formatTime(elapsed)}`;
+            document.getElementById('timerHint').classList.add('done');
+            localStorage.setItem('dandelion_done', '1');
+            localStorage.setItem('dandelion_time', elapsed);
+            showConfetti();
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            isFinished = false;
+            elapsed = 0;
+            document.getElementById('timerDigits').textContent = '00:00';
+            document.getElementById('actionBtn').textContent = '开始吧';
+            document.getElementById('timerHint').textContent = '建议时长：5分钟';
+            document.getElementById('timerHint').classList.remove('done');
+            updateBubble(bubbleTexts.idle);
+            document.getElementById('celebration').classList.remove('active');
+        }
+
+        function showConfetti() {
+            const container = document.getElementById('celebration');
+            container.innerHTML = '';
+            container.classList.add('active');
+            const colors = ['#e8a858', '#b8c97a', '#f0c8a0', '#7ab8c9', '#c4a882'];
+            for (let i = 0; i < 30; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random() * 100 + '%';
+                c.style.background = colors[Math.floor(Math.random() * colors.length)];
+                c.style.animationDelay = Math.random() * 1.5 + 's';
+                c.style.animationDuration = (1.5 + Math.random()) + 's';
+                container.appendChild(c);
+            }
+            setTimeout(() => container.classList.remove('active'), 3000);
+        }
+
+        function goBack() {
+            if (timer) clearInterval(timer);
+            document.body.style.transition = 'opacity 0.5s ease';
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+
+        // 加载页面自动消失
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1500);
+        });
+    </script>
+
+    <!-- 2.5D视差效果 -->
+    <script>
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+            document.body.style.backgroundPosition = `${50 + x * 3}% ${50 + y * 2}%`;
+        });
+    </script>
+</body>
+</html>

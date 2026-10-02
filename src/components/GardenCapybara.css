@@ -1,0 +1,102 @@
+/* ===== 花园场景卡皮巴拉（躺着晒太阳） ===== */
+.garden-capy {
+  position: absolute;
+  left: 50%;
+  bottom: 26%;
+  transform: translateX(-50%);
+  z-index: 11;
+  cursor: pointer;
+}
+
+/* 横躺的身体 */
+.garden-capy__body {
+  position: relative;
+  width: 130px;
+  height: 55px;
+  background: linear-gradient(180deg, #d0a070 0%, #b08050 100%);
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  box-shadow: inset -4px -6px 10px rgba(80, 50, 20, 0.3);
+  animation: capy-breath 5s ease-in-out infinite;
+}
+
+@keyframes capy-breath {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.06); }
+}
+
+/* 耳朵（横躺时在身体上方两侧） */
+.garden-capy__ear {
+  position: absolute;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #b08050;
+  box-shadow: inset -1px -2px 3px rgba(80, 50, 20, 0.3);
+  animation: ear-twitch 6s ease-in-out infinite;
+}
+
+.garden-capy__ear.ear-l { left: 28px; }
+.garden-capy__ear.ear-r { right: 28px; animation-delay: 0.5s; }
+
+@keyframes ear-twitch {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  93% { transform: rotate(-15deg); }
+  96% { transform: rotate(10deg); }
+}
+
+/* 眼睛 */
+.garden-capy__eye {
+  position: absolute;
+  top: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a2a1a;
+  animation: capy-blink 6s ease-in-out infinite;
+}
+
+.garden-capy__eye.eye-l { left: 40px; }
+.garden-capy__eye.eye-r { right: 40px; }
+
+@keyframes capy-blink {
+  0%, 85%, 100% { height: 10px; }
+  90% { height: 2px; top: 24px; }
+}
+
+/* 鼻子 */
+.garden-capy__nose {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 8px;
+  background: #6a4a3a;
+  border-radius: 50%;
+}
+
+/* 点击互动（轻微抖动） */
+.garden-capy--click-1 .garden-capy__body {
+  animation: capy-breath 5s ease-in-out infinite, capy-nudge 0.4s ease;
+}
+
+.garden-capy--click-2 .garden-capy__body {
+  animation: capy-breath 5s ease-in-out infinite, capy-nudge 0.4s ease;
+}
+
+@keyframes capy-nudge {
+  0%, 100% { transform: translateX(0) scaleY(1); }
+  30% { transform: translateX(-3px) scaleY(1.04); }
+  60% { transform: translateX(3px) scaleY(1.02); }
+}
+
+/* stage 2：卡皮巴拉更加放松，呼吸更慢 */
+.garden-capy--stage-2 .garden-capy__body {
+  animation: capy-breath-slow 7s ease-in-out infinite;
+}
+
+@keyframes capy-breath-slow {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.08); }
+}

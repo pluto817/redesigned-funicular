@@ -1,0 +1,341 @@
+.garden-env {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  perspective: 1400px;
+}
+
+/* 背景图 */
+.garden-bg-wrap {
+  position: absolute;
+  inset: -4%;
+  z-index: 1;
+}
+.garden-bg {
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/garden-bg.png');
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.3s ease-out;
+  transform-style: preserve-3d;
+}
+
+/* 阳光状态色彩叠加（渐变过渡） */
+.garden-sun-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  transition: background 2.5s ease;
+  mix-blend-mode: soft-light;
+}
+.garden-env--sun-0 .garden-sun-overlay {
+  background: linear-gradient(180deg, rgba(180, 200, 230, 0.35) 0%, rgba(255, 240, 220, 0.1) 60%, transparent 100%);
+}
+.garden-env--sun-1 .garden-sun-overlay {
+  background: linear-gradient(180deg, rgba(255, 240, 200, 0.15) 0%, transparent 60%);
+}
+.garden-env--sun-2 .garden-sun-overlay {
+  background: linear-gradient(180deg, rgba(255, 160, 90, 0.3) 0%, rgba(255, 200, 140, 0.25) 50%, rgba(180, 100, 70, 0.15) 100%);
+}
+
+/* 阳光光晕 */
+.garden-sun-glow {
+  position: absolute;
+  top: -10%;
+  right: 10%;
+  width: 60%;
+  height: 60%;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 240, 180, 0.5) 0%, transparent 60%);
+  animation: sun-breathe 6s ease-in-out infinite;
+  transition: opacity 2s ease;
+}
+.garden-env--sun-0 .garden-sun-glow { opacity: 0.4; }
+.garden-env--sun-1 .garden-sun-glow { opacity: 0.7; }
+.garden-env--sun-2 .garden-sun-glow { opacity: 0.9; background: radial-gradient(circle, rgba(255, 180, 100, 0.6) 0%, transparent 60%); }
+
+@keyframes sun-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+
+/* 云朵 */
+.garden-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition: transform 0.3s ease-out;
+}
+.gcloud {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  opacity: 0.9;
+  animation: cloud-drift 80s linear infinite;
+}
+.gc1 { top: 8%; left: -15%; animation-duration: 90s; }
+.gc2 { top: 18%; left: -25%; animation-duration: 110s; animation-delay: -30s; }
+.gc3 { top: 5%; left: -20%; animation-duration: 100s; animation-delay: -60s; }
+
+@keyframes cloud-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(130vw); }
+}
+
+.cloud-puff {
+  display: block;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(180, 180, 200, 0.2);
+}
+.cloud-puff.p1 { width: 50px; height: 50px; }
+.cloud-puff.p2 { width: 70px; height: 70px; margin-left: -18px; }
+.cloud-puff.p3 { width: 55px; height: 55px; margin-left: -16px; }
+.cloud-puff.p4 { width: 40px; height: 40px; margin-left: -12px; }
+.cloud-puff.p5 { width: 35px; height: 35px; margin-left: -10px; }
+.cloud-puff.p6 { width: 45px; height: 45px; margin-left: -14px; }
+
+/* 中景草叶 */
+.garden-mid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  z-index: 5;
+  pointer-events: none;
+  transition: transform 0.3s ease-out;
+}
+.grass {
+  position: absolute;
+  bottom: 0;
+  width: 4px;
+  height: 40px;
+  background: linear-gradient(to top, #6b9a4a, #8fbf5a);
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom;
+  animation: grass-sway 4s ease-in-out infinite;
+}
+.grass.g1 { height: 35px; animation-duration: 4s; }
+.grass.g2 { height: 50px; animation-duration: 5s; animation-delay: -1s; }
+.grass.g3 { height: 30px; animation-duration: 3.5s; animation-delay: -2s; }
+
+@keyframes grass-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+/* 前景探索点 */
+.garden-front {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  transition: transform 0.3s ease-out;
+}
+.explore-item {
+  position: absolute;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.3s ease;
+}
+.explore-item:hover { transform: scale(1.15); }
+.explore-item svg { display: block; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.18)); }
+.explore-item.dandelion svg { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12)); }
+
+/* 蝴蝶（SVG） */
+.butterfly {
+  top: 32%;
+  left: 18%;
+  animation: butterfly-fly 14s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+.butterfly svg { display: block; }
+/* 翅膀扇动 */
+.butterfly .wl, .butterfly .wl2 {
+  transform-origin: 28px 22px;
+  animation: wing-flap-l 0.35s ease-in-out infinite alternate;
+}
+.butterfly .wr, .butterfly .wr2 {
+  transform-origin: 32px 22px;
+  animation: wing-flap-r 0.35s ease-in-out infinite alternate;
+}
+@keyframes wing-flap-l {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.45); }
+}
+@keyframes wing-flap-r {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.45); }
+}
+@keyframes butterfly-fly {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(50px, -25px); }
+  50% { transform: translate(90px, 15px); }
+  75% { transform: translate(35px, 35px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 蒲公英 */
+.dandelion {
+  bottom: 22%;
+  left: 12%;
+}
+.dandelion-stem {
+  display: block;
+  width: 2px;
+  height: 35px;
+  background: #7a9a5a;
+  margin: 0 auto;
+}
+.dandelion-head {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin-top: -4px;
+  background: radial-gradient(circle, #fff 30%, rgba(255,255,255,0.6) 70%, transparent);
+  border-radius: 50%;
+}
+.dandelion--blown .dandelion-head { opacity: 0; }
+.dandelion-seed {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 50%;
+  animation: seed-fly 2.5s ease-out forwards;
+}
+.dandelion-seed.s1 { animation-delay: 0s; --tx: -40px; --ty: -60px; }
+.dandelion-seed.s2 { animation-delay: 0.15s; --tx: 30px; --ty: -70px; }
+.dandelion-seed.s3 { animation-delay: 0.3s; --tx: -20px; --ty: -80px; }
+.dandelion-seed.s4 { animation-delay: 0.45s; --tx: 50px; --ty: -50px; }
+.dandelion-seed.s5 { animation-delay: 0.6s; --tx: -60px; --ty: -40px; }
+.dandelion-seed.s6 { animation-delay: 0.75s; --tx: 10px; --ty: -90px; }
+@keyframes seed-fly {
+  from { transform: translate(-50%, 0); opacity: 1; }
+  to { transform: translate(calc(-50% + var(--tx)), var(--ty)); opacity: 0; }
+}
+
+/* 野餐篮 */
+.picnic-basket {
+  bottom: 18%;
+  right: 18%;
+  width: 50px;
+  height: 40px;
+}
+.basket-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 30px;
+  background: #b8860b;
+  border-radius: 4px;
+}
+.basket-lid {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 54px;
+  height: 12px;
+  background: #cd950c;
+  border-radius: 4px;
+  transition: transform 0.4s ease;
+  transform-origin: left center;
+}
+.picnic-basket--open .basket-lid {
+  transform: rotate(-35deg) translateX(-4px);
+}
+.basket-cookie {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+}
+
+/* 饮料 */
+.drink {
+  bottom: 20%;
+  left: 30%;
+  width: 24px;
+  height: 36px;
+}
+.drink-cup {
+  display: block;
+  width: 24px;
+  height: 32px;
+  background: linear-gradient(to bottom, #ff9999, #ff6666);
+  border-radius: 4px 4px 8px 8px;
+  margin-top: 4px;
+}
+.drink-straw {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: 16px;
+  background: #fff;
+  transform: translateX(-50%) rotate(10deg);
+  border-radius: 2px;
+}
+
+/* 树叶 */
+.leaf {
+  top: 15%;
+  right: 8%;
+  width: 40px;
+  height: 40px;
+}
+.leaf-shape {
+  display: block;
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle at 30% 30%, #9ecf6a, #5a8a3a);
+  border-radius: 0 50% 0 50%;
+  animation: leaf-sway 5s ease-in-out infinite;
+}
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(8deg); }
+}
+
+/* 漂浮粒子 */
+.garden-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  transition: transform 0.3s ease-out;
+}
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 240, 180, 0.7);
+  border-radius: 50%;
+  animation: particle-float 10s ease-in-out infinite;
+}
+.particle.pt1 { top: 20%; left: 30%; }
+.particle.pt2 { top: 40%; left: 60%; animation-delay: -2s; }
+.particle.pt3 { top: 60%; left: 20%; animation-delay: -4s; }
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+  50% { transform: translateY(-30px) translateX(10px); opacity: 0.8; }
+}
+
+/* 底部暗角 */
+.garden-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  background: linear-gradient(to top, rgba(40, 50, 30, 0.25) 0%, transparent 30%);
+}
